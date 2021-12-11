@@ -89,8 +89,9 @@ class Enemies(Character):
 
 @dataclass
 class Player(Character):
+    mana : int = 250
 
-    @staticmethod
+
     def attack_big_punch(x) : 
         ''' Function to attack enemy by random between 5 and 10   
         ---------------  
@@ -98,27 +99,39 @@ class Player(Character):
         x -= randint(5,10)
         return x  
 
-    @staticmethod
-    def attack_lightning(x):
-        ''' Function to attack group of enemy by random damages between 8 and 16
+    def attack_lightning(self,x):
+        ''' Function to attack one enemy by random damages between 9 and 12
+        Mana player is decreased by 50  
         ---------------  
-        x should be an int  (Like x = enemy_HP)   '''
-        return x - randint(8,16)
+        x should be an int  (Like x = enemy[HP])   '''
+        if self.mana >= 50 :
+            self.mana -= 50 
+            return x - randint(9,12)
+        else:
+            print('You didnt have enough mana')
 
-    @staticmethod
-    def fire_ball(x):
-        return x - randint(8,16)
+   
+    def fire_ball(self,x):
+        ''' Function to attack a group of enemies by random damages between 8 and 16
+        Mana player is decreased by 75  
+        ---------------  
+        x should be an int  (Like x = enemy[HP])   '''
+        if self.mana >= 75 :
+            self.mana -= 75 
+            return x - randint(8,16)
+        else:
+            print('You didnt have enough mana')
+        
 
-    @staticmethod
     def use_potion(self):
-        '''  This function add 15HP to HP_player 
-        ---------------  
-        x should be instance of class (Like x = player_hp)  '''
-        return self.HP + 15
+        '''  This function add 15HP to HP_player '''
+        return int(self.HP + 15)
 
-    @staticmethod
+
     def use_maxi_potion(self):
-        '''  This function add 50HP to HP_player 
-        ---------------  
-        x should be an int  (Like x = player_hp)  '''
-        return self.HP + 50
+        '''  This function add 50HP to HP_player  '''
+        return int(self.HP + 50)
+
+    def use_mana_potion(self):
+        '''  This function add 200mana to mana player  '''
+        return self.mana + 200
