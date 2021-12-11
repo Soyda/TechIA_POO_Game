@@ -95,7 +95,7 @@ class Player(Character):
     def attack_big_punch(x) : 
         ''' Function to attack enemy by random between 5 and 10   
         ---------------  
-        x should be an int  (Like x = enemy_HP) '''
+        x should be an int  (Like x = enemy[HP]) '''
         x -= randint(5,10)
         return x  
 
@@ -125,12 +125,12 @@ class Player(Character):
 
     def use_potion(self):
         '''  This function add 15HP to HP_player '''
-        return int(self.HP + 15)
+        return self.HP + 15
 
 
     def use_maxi_potion(self):
         '''  This function add 50HP to HP_player  '''
-        return int(self.HP + 50)
+        return self.HP + 50
 
     def use_mana_potion(self):
         '''  This function add 200mana to mana player  '''

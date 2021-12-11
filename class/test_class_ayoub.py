@@ -93,3 +93,5 @@ class TestPlayer:
         assert player_test.use_maxi_potion(player_test) > player_test.HP
         with pytest.raises(AttributeError):
             player_test.use_maxi_potion("51") 
+    def test_use_mana_potion(self, player_test):
+        assert player_test.use_mana_potion(player_test) > player_test.mana
