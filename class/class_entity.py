@@ -6,7 +6,7 @@ from random import randint , choice
  
 @dataclass 
 class Character(metaclass=ABCMeta):
-    name : str 
+    name : str
     HP : int 
     lvl : int 
     is_dead : bool = False 
@@ -42,6 +42,10 @@ class Character(metaclass=ABCMeta):
             self._lvl = value 
         
     def check_hp(self) :
+        ''' Function to chek enemies life
+        if enemy is dead set HP to 0 and switch bool True    
+        ---------------  
+        '''
         for i in self.list_enemies : 
             if i['HP'] <= 0 :
                 i['HP'] = 0 
@@ -57,8 +61,15 @@ class Enemies(Character):
 
     @staticmethod
     def enemy_attack(x):
+        ''' Function for enemy attack   
+        ---------------  
+        x should be an int  (Like x = Player.HP) '''
         return x - randint(4,9)  
     def gen(self):
+        ''' Function to create and add random enemies
+         add this instance and this enemies into a list
+        ---------------  
+        '''
         c=0 
         name_list= ["Pythosore","Devosore","Simplosore","Tiranosor","Bigbob","Jevaismourir"]
         self.list_enemies.append({"Name" : self.name , "HP" : self.HP, 'Level' : self.lvl , 'is_dead' : self.is_dead})
@@ -67,6 +78,9 @@ class Enemies(Character):
             c += 1 
         return self
     def unique(self):
+        ''' Function to crate and add only this instance into the "list_enemies"
+        ---------------  
+        '''
         self.list_enemies.append({"Name" : self.name , "HP" : self.HP, 'Level' : self.lvl , 'is_dead' : self.is_dead})
         return self
 
