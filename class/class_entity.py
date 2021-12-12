@@ -10,6 +10,7 @@ class Character(metaclass=ABCMeta):
     HP : int 
     lvl : int 
     is_dead : bool = False 
+    list_enemies : list = field(default_factory=list)
     
     @property
     def name(self) -> str:
@@ -46,25 +47,30 @@ class Character(metaclass=ABCMeta):
         if enemy is dead set HP to 0 and switch bool True    
         ---------------  
         '''
-        for i in self.list_enemies : 
-            if i['HP'] <= 0 :
-                i['HP'] = 0 
-                i['is_dead'] = True 
-            print( f"{i['Name']} is dead")
-
+        count = 0  
+        if len(self.list_enemies)>0 :
+            for i in self.list_enemies :
+                if i['HP'] <= 0 :
+                    i['HP'] = 0 
+                    i['is_dead'] = True 
+                    print(f"{i['Name']} is dead")
+                    count += 1 
+            return f"{str(count) + ' player dead' if count == 1 else str(count) + ' player dead' }"
+        else:
+            if self.HP <= 0 :
+                return f'You are dead.. Try again {self.name}'
+        
             
 
 
 @dataclass
 class Enemies(Character):
-    list_enemies : list = field(default_factory=list)
 
-    @staticmethod
-    def enemy_attack(x):
+    def enemy_attack(self):
         ''' Function for enemy attack   
         ---------------  
         x should be an int  (Like x = Player.HP) '''
-        return x - randint(4,9)  
+        return self.HP - randint(4,9)  
     def gen(self):
         ''' Function to create and add random enemies
          add this instance and this enemies into a list
@@ -92,12 +98,16 @@ class Player(Character):
     mana : int = 250
 
 
-    def attack_big_punch(x) : 
+    def attack_big_punch(self,x) : 
         ''' Function to attack enemy by random between 5 and 10   
         ---------------  
         x should be an int  (Like x = enemy[HP]) '''
-        x -= randint(5,10)
-        return x  
+        if self.mana >= 10 :
+            self.mana -= 10 
+            x-= randint(5,10)
+            return x
+        else:
+            print('You didnt have enough mana')
 
     def attack_lightning(self,x):
         ''' Function to attack one enemy by random damages between 9 and 12
@@ -106,7 +116,8 @@ class Player(Character):
         x should be an int  (Like x = enemy[HP])   '''
         if self.mana >= 50 :
             self.mana -= 50 
-            return x - randint(9,12)
+            x-= randint(9,12)
+            return x
         else:
             print('You didnt have enough mana')
 
@@ -118,20 +129,23 @@ class Player(Character):
         x should be an int  (Like x = enemy[HP])   '''
         if self.mana >= 75 :
             self.mana -= 75 
-            return x - randint(8,16)
+            x-= randint(8,16)
+            return x 
         else:
             print('You didnt have enough mana')
         
 
     def use_potion(self):
-        '''  This function add 15HP to HP_player '''
-        return self.HP + 15
-
+        '''  This function add 15HP to Player.HP '''
+        self.HP += 15 
+        return self.HP 
 
     def use_maxi_potion(self):
-        '''  This function add 50HP to HP_player  '''
-        return self.HP + 50
+        '''  This function add 50HP to Player.HP  '''
+        self.HP += 50 
+        return self.HP
 
     def use_mana_potion(self):
-        '''  This function add 200mana to mana player  '''
-        return self.mana + 200
+        '''  This function add 200mana to Player.mana  '''
+        self.mana += 200 
+        return self.mana
