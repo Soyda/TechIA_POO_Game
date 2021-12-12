@@ -47,6 +47,7 @@ class Character(metaclass=ABCMeta):
         if enemy is dead set HP to 0 and switch bool True    
         ---------------  
         '''
+        
         count = 0  
         if len(self.list_enemies)>0 :
             for i in self.list_enemies :
@@ -55,10 +56,9 @@ class Character(metaclass=ABCMeta):
                     i['is_dead'] = True 
                     print(f"{i['Name']} is dead")
                     count += 1 
-            return f"{str(count) + ' player dead' if count == 1 else str(count) + ' player dead' }"
-        else:
-            if self.HP <= 0 :
-                return f'You are dead.. Try again {self.name}'
+            return f"{str(count) + ' player is dead' if count == 1 else str(count) + ' players are dead' }" 
+        if self.HP <= 0 :
+            return f'You are dead.. Try again {self.name}'
         
             
 
@@ -66,14 +66,16 @@ class Character(metaclass=ABCMeta):
 @dataclass
 class Enemies(Character):
 
-    def enemy_attack(self):
+    @staticmethod
+    def enemy_attack(player):
         ''' Function for enemy attack   
         ---------------  
-        x should be an int  (Like x = Player.HP) '''
-        return self.HP - randint(4,9)  
+        player should be instance of Player Class'''
+        player.HP -= randint(4,9)
+        return player.HP
     def gen(self):
         ''' Function to create and add random enemies
-         add this instance and this enemies into a list
+         and add them into a list
         ---------------  
         '''
         c=0 
@@ -84,7 +86,7 @@ class Enemies(Character):
             c += 1 
         return self
     def unique(self):
-        ''' Function to crate and add only this instance into the "list_enemies"
+        ''' Function to add this instance into the list_enemies
         ---------------  
         '''
         self.list_enemies.append({"Name" : self.name , "HP" : self.HP, 'Level' : self.lvl , 'is_dead' : self.is_dead})

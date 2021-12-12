@@ -44,12 +44,12 @@ class TestEnemies:
 
     def test_check_hp(self):
         enemies_test_dead = Enemies('First monster',0,0)
-        assert enemies_test_dead.unique().check_hp() == '1 player dead'
+        assert enemies_test_dead.unique().check_hp() == '1 player is dead'
         player_dead = Player('NamePlayer',0,10)
         assert player_dead.check_hp() == f'You are dead.. Try again {player_dead.name}'
 
     def test_enemy_attack(self, enemies_test, player_test ):
-        assert enemies_test.enemy_attack() <  player_test.HP
+        assert player_test.HP > enemies_test.enemy_attack(player_test) 
         with pytest.raises(AttributeError):
             player_test.enemy_attack()
 
