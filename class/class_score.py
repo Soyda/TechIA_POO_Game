@@ -13,14 +13,6 @@ class Score():
     #     self.name = player_name 
     #     self.score = round
 
-    @property
-    def name(self) -> str:
-        return self.name
-    
-    @property
-    def score(self) -> int:
-        return self.score
-
     def save_score(self):
         if os.path.exists('./data/scores.csv') == False : # check whether scores.csv exists, if not create it 
             header = ["Name", "Score"]
@@ -51,3 +43,8 @@ class Score():
                         print(ligne[0], ' ', ligne[1])
             print("==================================")
 
+# test
+score = Score('Player', 45)
+score.display_score()
+score.save_score()
+score.display_score()
