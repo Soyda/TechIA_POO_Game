@@ -11,6 +11,7 @@ class Character(metaclass=ABCMeta):
     lvl : int 
     is_dead : bool = False 
     list_enemies : list = field(default_factory=list)
+    status = True 
     
     @property
     def name(self) -> str:
@@ -54,10 +55,13 @@ class Character(metaclass=ABCMeta):
                 if i['HP'] <= 0 :
                     i['HP'] = 0 
                     i['is_dead'] = True 
-                    print(f"{i['Name']} is dead")
                     count += 1 
             return f"{str(count) + ' player is dead' if count == 1 else str(count) + ' players are dead' }" 
+        if len(self.list_enemies) == count:
+            self.status = False 
         if self.HP <= 0 :
+            self.status = False 
+            self.is_dead = True 
             return f'You are dead.. Try again {self.name}'
         
             

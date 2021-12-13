@@ -14,7 +14,7 @@ def enemies_test():
 
 @pytest.fixture
 def player_test():
-    return Player('TestPlayer',50,0)
+    return Player('TestPlayer',50,5)
 
 
 
