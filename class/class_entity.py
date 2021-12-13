@@ -84,13 +84,13 @@ class Enemies(Character):
         while c < randint(2,3):
             self.list_enemies.append({ "Name" : choice(name_list) , "HP" : randint(35,50), 'Level' : self.lvl , 'is_dead' : self.is_dead})
             c += 1 
-        return self.list_enemies
+        return self
     def unique(self):
         ''' Function to add this instance into the list_enemies
         ---------------  
         '''
         self.list_enemies.append({"Name" : self.name , "HP" : self.HP, 'Level' : self.lvl , 'is_dead' : self.is_dead})
-        return self.list_enemies
+        return self
 
 
 
