@@ -44,7 +44,7 @@ class Score():
             print("==================================")
 
 # test
-score = Score('Player', 45)
-score.display_score()
-score.save_score()
-score.display_score()
+# score = Score('Player', 45)
+# score.display_score()
+# score.save_score()
+# score.display_score()
