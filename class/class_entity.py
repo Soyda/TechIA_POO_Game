@@ -116,12 +116,15 @@ class Player(Character):
         Mana player is decreased by 50  
         ---------------  
         x should be an int  (Like x = enemy[HP])   '''
-        if self.mana >= 50 :
-            self.mana -= 50 
-            x-= randint(9,12)
-            return x
+        if self.lvl >= 3 :
+            if self.mana >= 50 :
+                self.mana -= 50 
+                x-= randint(9,12)
+                return x
+            else:
+                print('You didnt have enough mana')
         else:
-            print('You didnt have enough mana')
+            print('You need reach the level 3 for attack lightning')
 
    
     def fire_ball(self,x):
@@ -129,12 +132,15 @@ class Player(Character):
         Mana player is decreased by 75  
         ---------------  
         x should be an int  (Like x = enemy[HP])   '''
-        if self.mana >= 75 :
-            self.mana -= 75 
-            x-= randint(8,16)
-            return x 
+        if self.lvl >= 3 :
+            if self.mana >= 75 :
+                self.mana -= 75 
+                x-= randint(8,16)
+                return x 
+            else:
+                print('You didnt have enough mana')
         else:
-            print('You didnt have enough mana')
+            print('You need reach the level 5 for fire ball')
         
 
     def use_potion(self):
