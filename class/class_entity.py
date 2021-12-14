@@ -11,6 +11,7 @@ class Character(metaclass=ABCMeta):
     lvl : int 
     is_dead : bool = False 
     list_enemies : list = field(default_factory=list)
+    status = True 
     
     @property
     def name(self) -> str:
@@ -54,10 +55,13 @@ class Character(metaclass=ABCMeta):
                 if i['HP'] <= 0 :
                     i['HP'] = 0 
                     i['is_dead'] = True 
-                    print(f"{i['Name']} is dead")
                     count += 1 
             return f"{str(count) + ' player is dead' if count == 1 else str(count) + ' players are dead' }" 
+        if len(self.list_enemies) == count:
+            self.status = False 
         if self.HP <= 0 :
+            self.status = False 
+            self.is_dead = True 
             return f'You are dead.. Try again {self.name}'
         
             
@@ -116,12 +120,15 @@ class Player(Character):
         Mana player is decreased by 50  
         ---------------  
         x should be an int  (Like x = enemy[HP])   '''
-        if self.mana >= 50 :
-            self.mana -= 50 
-            x-= randint(9,12)
-            return x
+        if self.lvl >= 3 :
+            if self.mana >= 50 :
+                self.mana -= 50 
+                x-= randint(9,12)
+                return x
+            else:
+                print('You didnt have enough mana')
         else:
-            print('You didnt have enough mana')
+            print('You need reach the level 3 for attack lightning')
 
    
     def fire_ball(self,x):
@@ -129,12 +136,15 @@ class Player(Character):
         Mana player is decreased by 75  
         ---------------  
         x should be an int  (Like x = enemy[HP])   '''
-        if self.mana >= 75 :
-            self.mana -= 75 
-            x-= randint(8,16)
-            return x 
+        if self.lvl >= 3 :
+            if self.mana >= 75 :
+                self.mana -= 75 
+                x-= randint(8,16)
+                return x 
+            else:
+                print('You didnt have enough mana')
         else:
-            print('You didnt have enough mana')
+            print('You need reach the level 5 for fire ball')
         
 
     def use_potion(self):
