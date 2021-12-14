@@ -5,13 +5,13 @@ import os
 import csv
 
 @dataclass
-class Score:
-    name: str = field(init=False)
-    score : int = field(init=False)
+class Score():
+    name: str # = field(init=False)
+    score: int # = field(init=False)
 
-    def __post_init__(self):
-        self.name = player_name 
-        self.score = round
+    # def __post_init__(self):
+    #     self.name = player_name 
+    #     self.score = round
 
     def save_score(self):
         if os.path.exists('./data/scores.csv') == False : # check whether scores.csv exists, if not create it 
@@ -26,10 +26,25 @@ class Score:
             writer = csv.writer(score_csv, delimiter=',')
             score_line = [self.name, self.score]
             writer.writerow(score_line) # add a line with current name and score
+    
+    def display_score(self):
+        if os.path.exists('./data/scores.csv') == False :
+            print("==================================")
+            print('Sorry no scores available for now.')
+            print("==================================")
 
-# tests
-player_name = 'plop'
-round = 5
-score = Score()
-print(f"Le joueur {score.name} a {score.score} points")
-score.save_score()
+        else :
+            print("==================================")
+            # Display scores
+            with open('./data/scores.csv') as score_csv:
+                reader = csv.reader(score_csv, delimiter=',') #reader mode
+                for ligne in reader: # read each line
+                    if len(ligne) != 0 :
+                        print(ligne[0], ' ', ligne[1])
+            print("==================================")
+
+# test
+# score = Score('Player', 45)
+# score.display_score()
+# score.save_score()
+# score.display_score()
