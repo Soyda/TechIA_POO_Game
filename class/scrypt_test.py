@@ -7,6 +7,7 @@ from dataclasses import dataclass , field
 from random import randint , choice  
 import csv 
 import colorama
+from pickle import * 
 
 @dataclass 
 class Character(metaclass=ABCMeta):
@@ -56,13 +57,12 @@ class Character(metaclass=ABCMeta):
                     i['HP'] = 0 
                     i['is_dead'] = True 
                     count += 1 
-            return f"{str(count) + ' player is dead' if count == 1 else str(count) + ' players are dead' }" 
+            return print( f"{str(count) + ' monster is dead' if count == 1 else str(count) + ' monsters are dead' }" )
         if len(self.list_enemies) == count:
             self.status = False 
         if self.HP <= 0 :
             self.health_status = False 
             self.is_dead = True 
-            return f'You are dead.. Try again {self.name}'
         
             
 
@@ -444,15 +444,12 @@ class Game:
                 print("=========================================================================================")
                 print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
                 print("=========================================================================================")
-                player = Player(3,1,3,100,self.player_name,110,5)
+                player = Player(3,1,3,100,self.player_name,125,5)
 
 
 
                 enemies = Enemies('First_boss', 75,0).gen()
                 Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
-
-
-                enemies = Enemies('Second_boss',125,1)
 
 
                 # combat = Combat()
@@ -468,7 +465,6 @@ class Game:
             elif main_choice == '4':
                 print("See you later !")
                 self.exit = False
-            
             else :
                 print(bcolors.FAIL + "\n Please use number 1, 2, 3 or 4" + bcolors.RESET)
 
@@ -530,6 +526,19 @@ class Combat(Enemies):
             print(f'        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana} \n ')
             if question == "1" : # we start the attack against enemies
                 self.target_choice(player,enemy)
+                player.check_hp()
+                enemy.check_hp()
+                count = 0 
+                for i in enemy.list_enemies:
+                    if i['is_dead'] == True :
+                        count += 1 
+                if len(enemy.list_enemies) == count :
+                    print('You beat this wave!')
+                    break
+                if player.is_dead <= 0:
+                    print(f'You are dead {player.name}.. Try again')
+                    break
+                        
             elif question == "2" : # we start the attack against enemies
                 while True :
                     player.check_inventory(player)
@@ -548,7 +557,7 @@ class Combat(Enemies):
             elif question == "4":
                 break
             else:
-                print(bcolors.FAIL + "Please use number correct number \n" + bcolors.RESET)
+                print(bcolors.FAIL + "Please use correct number \n" + bcolors.RESET)
 
 # enemies = Enemies('mini_boss', 75,5).gen()
 # Fight = Combat(0,enemies)
