@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABCMeta
 import os 
 from os import environ
+import pickle
 # from types import GenericAgen
 from typing import ClassVar 
 from dataclasses import dataclass , field
@@ -8,6 +9,7 @@ from random import randint , choice
 import csv 
 import colorama
 from pickle import * 
+import os.path 
 
 @dataclass 
 class Character(metaclass=ABCMeta):
@@ -456,14 +458,25 @@ class Game:
                     else :
                         save_game = input("Would you like to save ? 'y' to confirm\n")
                         if save_game == 'y': #save()
+                            f = open('./data/save.csv', 'wb')
+                            pickle.dump([player,enemies],f)
+                            f.close()
                             print("Your game has been saved.")
                         break
                 self.score = Score(player.name, self.wave)
                 self.score.save_score()
 
             elif main_choice == '2':
-                print('This option is coming soon..')
-                continue
+                file = './data/save.csv'
+                save = open(file,"rb")
+                variable = pickle.load(save)
+                player = variable[0]
+                enemies = variable[1]
+                save.close()
+                choice = input(f'Please choose your saved game : \n1 - Name : {player.name}')
+                if choice == "1":
+                    if os.path.isfile(file):
+                        
 
             elif main_choice == '3':
                 self.score = Score(self.player_name, 0)
