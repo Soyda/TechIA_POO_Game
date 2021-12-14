@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from class_entity import Enemies, Character, Player 
+from scrypt_test import *
 
 
 @pytest.fixture

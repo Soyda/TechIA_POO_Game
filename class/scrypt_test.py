@@ -137,7 +137,7 @@ class Inventory(metaclass=ABCMeta):
 
     def check_inventory(self,player):
         '''This function prints the number of potions available in inventory'''
-        return print(f"\n-----------------------\n Inventory:\n Gold: {player.gold}\n Health potion(s): {player.potion}\n Max health potion(s): {player.max_potion}\n Mana potion(s): {player.mana_potion}\n-----------------------\n")
+        return print(f"\n-----------------------\n Inventory:\n Gold: {player.gold}\n Health potion(s): {player.potion}\n Max health potion(s): {player.max_potion}\n Mana potion(s): {player.mana_potion}\n Gold : {player.gold}\n-----------------------\n")
 
 # inventory = Inventory(10, 2, 3, 100)
 # print(inventory.potion)
@@ -157,23 +157,33 @@ class Inventory(metaclass=ABCMeta):
 # inventory.check_inventory()
 
 
+
 @dataclass
 class Player(Character,Inventory):
     mana : int = 250
 
 
-    def attack_big_punch(self,x) : 
+    def attack_big_punch(self,enemy, target, combat) : 
         ''' Function to attack enemy by random between 5 and 10   
         ---------------  
         x should be an int  (Like x = enemy[HP]) '''
         if self.mana >= 10 :
             self.mana -= 10 
-            x-= randint(5,10)
-            return x
+            diff_enemy = enemy.list_enemies[target - 1]["HP"] 
+            enemy.list_enemies[target - 1]['HP'] -= randint(5,10)
+            print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
+            diff = self.HP
+            self.HP = enemy.enemy_attack(self)
+            print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{self.name} : -", diff - self.HP, "HP lost!" ,"\n" + bcolors.RESET) 
+            combat.round += 1 
+            print(f'=================================  ROUND {combat.round}   ================================\n')
+            
+            return enemy.list_enemies[target - 1]['HP']
         else:
             print('You didnt have enough mana')
+            return enemy.list_enemies[target - 1]['HP']
 
-    def attack_lightning(self,x):
+    def attack_lightning(self,enemy, target, combat):
         ''' Function to attack one enemy by random damages between 9 and 12
         Mana player is decreased by 50  
         ---------------  
@@ -181,16 +191,25 @@ class Player(Character,Inventory):
         if self.lvl >= 3 :
             if self.mana >= 50 :
                 self.mana -= 50 
-                x-= randint(9,12)
-                return x
+                diff_enemy = enemy.list_enemies[target - 1]["HP"] 
+                enemy.list_enemies[target - 1]['HP']-= randint(9,12)
+                
+                print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
+                diff = self.HP
+                self.HP = enemy.enemy_attack(self)
+                print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{self.name} : -", diff - self.HP, "HP lost!" ,"\n" + bcolors.RESET) 
+                combat.round += 1 
+                print(f'=================================  ROUND {combat.round}   ================================\n')
+            
+                return enemy.list_enemies[target - 1]['HP']
             else:
                 print('You didnt have enough mana')
-                return x 
+                return enemy.list_enemies[target - 1]['HP']
         else:
             print('You need reach the level 3 for attack lightning')
-            return x 
+            return enemy.list_enemies[target - 1]['HP']
    
-    def fire_ball(self,x):
+    def fire_ball(self,enemy, combat):
         ''' Function to attack a group of enemies by random damages between 8 and 16
         Mana player is decreased by 75  
         ---------------  
@@ -198,34 +217,58 @@ class Player(Character,Inventory):
         if self.lvl >= 3 :
             if self.mana >= 75 :
                 self.mana -= 75 
-                x-= randint(8,16)
-                return x 
+                for i,j in enumerate(enemy.list_enemies):
+                    diff_enemy = enemy.list_enemies[i]["HP"] 
+                    enemy.list_enemies[i]['HP']-= randint(9,12)
+                    
+                    print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[i]["HP"], " HP" + bcolors.RESET)
+                diff = self.HP
+                self.HP = enemy.enemy_attack(self)
+                print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{self.name} : -", diff - self.HP, "HP lost!" ,"\n" + bcolors.RESET) 
+                combat.round += 1 
+                print(f'=================================  ROUND {combat.round}   ================================\n')
+                for i,j in enumerate(enemy.list_enemies):
+                    return enemy.list_enemies[i]['HP']
             else:
                 print('You didnt have enough mana')
-                return x 
+                for i,j in enumerate(enemy.list_enemies):
+                    return enemy.list_enemies[i]['HP']
         else:
             print('You need reach the level 5 for fire ball')
-            return x 
+            for i,j in enumerate(enemy.list_enemies):
+                return enemy.list_enemies[i]['HP']
+        
         
 
-    def use_potion(self,player):
+    def use_potion(self):
         '''  This function add 15HP to Player.HP '''
-        if player.potion >= 1 :
-            player.potion -=1 
+        if self.potion >= 1 :
+            self.potion -=1 
             self.HP += 15 
+            print(f'\n1 potion used\nNow you have {self.HP} HP')
+        else:
+            print("You didn't have enough potion")
         return self.HP 
+        
 
     def use_maxi_potion(self):
         '''  This function add 50HP to Player.HP  '''
         if self.max_potion >= 1 :
             self.max_potion -= 1 
             self.HP += 50 
+            print(f'\n1 max potion used\nNow you have {self.HP} HP')
+        else:
+            print("You didn't have enough max potion")
         return self.HP
 
     def use_mana_potion(self):
         '''  This function add 200mana to Player.mana  '''
-        if player.mana_potion >= 1 :
+        if self.mana_potion >= 1 :
+            self.mana_potion -= 1
             self.mana += 200 
+            print(f'\n1 mana potion used\nNow you have {self.mana} Mana')
+        else:
+            print("You didn't have enough potion")
         return self.mana
 
 
@@ -393,7 +436,7 @@ class Game:
     def main_menu(self):
         while(self.exit):
             
-            main_choice = input(f"\nMain menu \nMake your choice {self.player_name} (Use number 1 - 2 - 3) \n 1 - Start  \n 2 - Score \n 3 - Exit \n ")
+            main_choice = input(f"\nMain menu \nMake your choice {self.player_name} (Use number 1 - 2 - 3) \n 1 - Start  \n 2 - Load game \n 3 - Score \n 4 - Exit \n ")
 
             if main_choice == '1':
 
@@ -401,7 +444,7 @@ class Game:
                 print("=========================================================================================")
                 print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
                 print("=========================================================================================")
-                player = Player(3,1,3,100,self.player_name,110,0)
+                player = Player(3,1,3,100,self.player_name,110,5)
 
 
 
@@ -416,15 +459,18 @@ class Game:
                 # shop
 
             elif main_choice == '2':
+                continue
+
+            elif main_choice == '3':
                 self.score = Score(self.player_name, 0)
                 self.score.display_score()
 
-            elif main_choice == '3':
+            elif main_choice == '4':
                 print("See you later !")
                 self.exit = False
             
             else :
-                print("Please use number 1, 2, or 3")
+                print(bcolors.FAIL + "\n Please use number 1, 2, 3 or 4" + bcolors.RESET)
 
 
 @dataclass
@@ -432,6 +478,7 @@ class bcolors:
     OK = '\033[92m' #GREEN
     WARNING = '\033[93m' #YELLOW
     FAIL = '\033[91m' #RED
+    BLUE = '\033[34m' #BLUE
     RESET = '\033[0m' #RESET COLOR
 
 
@@ -442,7 +489,7 @@ class Combat(Enemies):
     round : int = 0
     
     def battle_choice(self):
-        choice = input ("Make your choice : \n  1 : Attack \n  2 : Black market \n  3 : Leave the game \n ")
+        choice = input ("Make your choice : \n  1 : Attack \n  2 : Inventaire \n  3 : Black market \n  4 : Leave the game  ")
         return choice
     
     def enemy_choice(self,player,enemy):
@@ -457,37 +504,18 @@ class Combat(Enemies):
     
     def target_choice(self, player,enemy):
         attack_choice = input (f"Choose your attack {player.name} ? \n 1 : Big punch \n 2 : Attack lightning \n 3 : Fire ball \n ")
-        target = int(self.enemy_choice(player,enemy))
+        
         
         if attack_choice == "1":
-            diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-            enemy.list_enemies[target - 1]['HP'] = player.attack_big_punch(enemy.list_enemies[target-1]['HP'])
-            print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
-            diff = player.HP
-            player.HP = enemy.enemy_attack(player)
-            print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{player.name} : -", diff - player.HP, "HP lost!" ,"\n" + bcolors.RESET) 
-            self.round += 1 
-            print(f'=================================  ROUND {self.round}   ================================\n')
+            target = int(self.enemy_choice(player,enemy))
+            player.attack_big_punch(enemy, target, self)
 
         elif attack_choice == "2":
-            diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-            enemy.list_enemies[target-1]['HP'] = player.attack_lightning(enemy.list_enemies[target-1]['HP'])
-            print("\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP")
-            diff = player.HP
-            player.HP = enemy.enemy_attack(player)
-            print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{player.name} : -", diff - player.HP, "HP lost!" ,"\n" + bcolors.RESET) 
-            self.round += 1
-            print(f'=================================  ROUND {self.round}   ================================\n')
+            target = int(self.enemy_choice(player,enemy))
+            player.attack_lightning(enemy,target, self)
 
         elif attack_choice == "3":
-            diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-            enemy.list_enemies[target-1]['HP'] = player.fire_ball(enemy.list_enemies[target-1]['HP']) 
-            print("\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP")
-            diff = player.HP
-            player.HP = enemy.enemy_attack(player)
-            print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{player.name} : -", diff - player.HP, "HP lost!" ,"\n" + bcolors.RESET) 
-            self.round += 1 
-            print(f'=================================  ROUND {self.round}   ================================\n')
+            player.fire_ball(enemy,self)
             
         else:          
             print("Use correct number")
@@ -495,16 +523,32 @@ class Combat(Enemies):
     
     def battle(self,player,enemy):
         while self.leave :
+            print(bcolors.BLUE + f" Enemioes in game : " + bcolors.RESET)
+            for i in enemy.list_enemies:
+                print(bcolors.BLUE + f" Monster : {i['Name']} HP : {i['HP']} Lvl : {i['Level']}" + bcolors.RESET)
             question = self.battle_choice()
             print(f'        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana} \n ')
             if question == "1" : # we start the attack against enemies
                 self.target_choice(player,enemy)
             elif question == "2" : # we start the attack against enemies
-                player.check_inventory(player)
-                Shop(10,10,10,10).black_market(player)
+                while True :
+                    player.check_inventory(player)
+                    menu = input(f' Iventory menu: \n 1. Use potion : {player.potion} \n 2. Use max potion : {player.max_potion} \n 3. Use mana potion : {player.mana_potion} \n 4. Exit \n')
+                    if menu == "1":
+                        player.use_potion()
+                    if menu == "2" :
+                        player.use_maxi_potion()
+                    if menu == "3":
+                        player.use_mana_potion()
+                    if menu == "4":
+                        break
                 # self.battle_choice()
             elif question == "3" : # we start the attack against enemies
+                Shop(10,10,10,10).black_market(player)
+            elif question == "4":
                 break
+            else:
+                print(bcolors.FAIL + "Please use number correct number \n" + bcolors.RESET)
 
 # enemies = Enemies('mini_boss', 75,5).gen()
 # Fight = Combat(0,enemies)
