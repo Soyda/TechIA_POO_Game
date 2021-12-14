@@ -1,13 +1,12 @@
 from abc import abstractmethod, ABCMeta
+import os 
 from os import environ
-from types import GenericAlias
+# from types import GenericAgen
 from typing import ClassVar 
 from dataclasses import dataclass , field
 from random import randint , choice  
 import csv 
-import colorama 
-
-
+import colorama
 
 @dataclass 
 class Character(metaclass=ABCMeta):
@@ -77,7 +76,7 @@ class Enemies(Character):
         ---------------  
         player should be instance of Player Class'''
         player.HP -= randint(4,9)
-        return int(player.HP)
+        return player.HP
     def gen(self):
         ''' Function to create and add random enemies
          and add them into a list
@@ -209,19 +208,24 @@ class Player(Character,Inventory):
             return x 
         
 
-    def use_potion(self):
+    def use_potion(self,player):
         '''  This function add 15HP to Player.HP '''
-        self.HP += 15 
+        if player.potion >= 1 :
+            player.potion -=1 
+            self.HP += 15 
         return self.HP 
 
     def use_maxi_potion(self):
         '''  This function add 50HP to Player.HP  '''
-        self.HP += 50 
+        if self.max_potion >= 1 :
+            self.max_potion -= 1 
+            self.HP += 50 
         return self.HP
 
     def use_mana_potion(self):
         '''  This function add 200mana to Player.mana  '''
-        self.mana += 200 
+        if player.mana_potion >= 1 :
+            self.mana += 200 
         return self.mana
 
 
@@ -393,23 +397,29 @@ class Game:
 
             if main_choice == '1':
 
+
+                print("=========================================================================================")
+                print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
+                print("=========================================================================================")
                 player = Player(3,1,3,100,self.player_name,110,0)
-                enemies = Enemies('First_boss', 75,5).gen()
-                print("=========================================================================================")
-                print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {player.name}.")
-                print("=========================================================================================")
+
+
+
+                enemies = Enemies('First_boss', 75,0).gen()
                 Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
 
+
+                enemies = Enemies('Second_boss',125,1)
 
 
                 # combat = Combat()
                 # shop
 
-            elif self.main_choice == '2':
+            elif main_choice == '2':
                 self.score = Score(self.player_name, 0)
                 self.score.display_score()
 
-            elif self.main_choice == '3':
+            elif main_choice == '3':
                 print("See you later !")
                 self.exit = False
             
@@ -430,10 +440,9 @@ class Combat(Enemies):
     combat_status : bool = True
     leave : bool = True 
     round : int = 0
-
     
     def battle_choice(self):
-        choice = input ("Make your choice : \n  1 : Attack \n  2 : Iventory space \n  3 : Leave the game \n ")
+        choice = input ("Make your choice : \n  1 : Attack \n  2 : Black market \n  3 : Leave the game \n ")
         return choice
     
     def enemy_choice(self,player,enemy):
@@ -485,17 +494,17 @@ class Combat(Enemies):
             self.target_choice(player,enemy)
     
     def battle(self,player,enemy):
-        while(self.leave) :
+        while self.leave :
+            question = self.battle_choice()
             print(f'        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana} \n ')
-            if self.battle_choice() == "1" : # we start the attack against enemies
+            if question == "1" : # we start the attack against enemies
                 self.target_choice(player,enemy)
-            elif self.battle_choice() == "2" : # we start the attack against enemies
+            elif question == "2" : # we start the attack against enemies
                 player.check_inventory(player)
                 Shop(10,10,10,10).black_market(player)
                 # self.battle_choice()
-            elif self.battle_choice() == "3" : # we start the attack against enemies
-                print("Back to the main menu")
-                self.leave = False
+            elif question == "3" : # we start the attack against enemies
+                break
 
 # enemies = Enemies('mini_boss', 75,5).gen()
 # Fight = Combat(0,enemies)
