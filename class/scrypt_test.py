@@ -57,11 +57,7 @@ class Character(metaclass=ABCMeta):
                     i['HP'] = 0 
                     i['is_dead'] = True 
                     count += 1 
-            return print( f"{str(count) + ' monster is dead' if count == 1 else str(count) + ' monsters are dead' }" )
-        if len(self.list_enemies) == count:
-            self.status = False 
         if self.HP <= 0 :
-            self.health_status = False 
             self.is_dead = True 
         
             
@@ -86,7 +82,7 @@ class Enemies(Character):
         name_list= ["Pythosore","Devosore","Simplosore","Tiranosor","Bigbob","Jevaismourir"]
         self.list_enemies.append({"Name" : self.name , "HP" : self.HP, 'Level' : self.lvl , 'is_dead' : self.is_dead})
         while c < randint(2,3):
-            self.list_enemies.append({ "Name" : choice(name_list) , "HP" : randint(35,50), 'Level' : self.lvl , 'is_dead' : self.is_dead})
+            self.list_enemies.append({ "Name" : choice(name_list) , "HP" : randint(25,40), 'Level' : self.lvl , 'is_dead' : self.is_dead})
             c += 1 
         return self
     def unique(self):
@@ -170,7 +166,7 @@ class Player(Character,Inventory):
         if self.mana >= 10 :
             self.mana -= 10 
             diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-            enemy.list_enemies[target - 1]['HP'] -= randint(5,10)
+            enemy.list_enemies[target - 1]['HP'] -= randint(9,14)
             print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
             diff = self.HP
             self.HP = enemy.enemy_attack(self)
@@ -192,7 +188,7 @@ class Player(Character,Inventory):
             if self.mana >= 50 :
                 self.mana -= 50 
                 diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-                enemy.list_enemies[target - 1]['HP']-= randint(9,12)
+                enemy.list_enemies[target - 1]['HP']-= randint(14,18)
                 
                 print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
                 diff = self.HP
@@ -203,10 +199,10 @@ class Player(Character,Inventory):
             
                 return enemy.list_enemies[target - 1]['HP']
             else:
-                print('You didnt have enough mana')
+                print('You don\'t have enough mana')
                 return enemy.list_enemies[target - 1]['HP']
         else:
-            print('You need reach the level 3 for attack lightning')
+            print('You need to reach the level 3 for attack lightning')
             return enemy.list_enemies[target - 1]['HP']
    
     def fire_ball(self,enemy, combat):
@@ -219,7 +215,7 @@ class Player(Character,Inventory):
                 self.mana -= 75 
                 for i,j in enumerate(enemy.list_enemies):
                     diff_enemy = enemy.list_enemies[i]["HP"] 
-                    enemy.list_enemies[i]['HP']-= randint(9,12)
+                    enemy.list_enemies[i]['HP']-= randint(10,15)
                     
                     print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[i]["HP"], " HP" + bcolors.RESET)
                 diff = self.HP
@@ -230,11 +226,11 @@ class Player(Character,Inventory):
                 for i,j in enumerate(enemy.list_enemies):
                     return enemy.list_enemies[i]['HP']
             else:
-                print('You didnt have enough mana')
+                print('You don\'t have enough mana')
                 for i,j in enumerate(enemy.list_enemies):
                     return enemy.list_enemies[i]['HP']
         else:
-            print('You need reach the level 5 for fire ball')
+            print('You need to reach the level 5 for fire ball')
             for i,j in enumerate(enemy.list_enemies):
                 return enemy.list_enemies[i]['HP']
         
@@ -287,6 +283,7 @@ class Shop(Inventory):
 
     def black_market(self,player):
         while(self.leave):
+            self.check_inventory(player)
             print('Welcome my friend, I have some stuff there for you!\n')
             print(f"1. Buy health potion for 20 gold.     ==> {Inventory.potion} item in stock" )
             print(f"2. Buy max health potion for 50 gold. ==> {Inventory.max_potion} item in stock")
@@ -301,33 +298,30 @@ class Shop(Inventory):
                     player.potion += 1
                     player.gold -= 20
                     self.gold_stock += 20
-                    print("\nA health potion has been added to your inventory.\n")
-                    self.check_inventory(player)
+                    print("\nA health potion has been added to your inventory.")
                 else :
-                    print("\nSorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '2':
                 if Inventory.max_potion > 0 and player.gold >= 50:
                     Inventory.max_potion -= 1
                     player.max_potion += 1
                     player.gold -= 50
                     self.gold_stock += 50
-                    print("\nA max health potion has been added to your inventory.\n")
-                    self.check_inventory(player)
+                    print("\nA max health potion has been added to your inventory.")
                 else :
-                    print("\nSorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '3':
                 if Inventory.mana_potion >0 and player.gold >= 30:
                     Inventory.mana_potion -= 1
                     player.mana_potion += 1
                     player.gold -= 30
                     self.gold_stock += 30
-                    print("\nA mana health potion has been added to your inventory.\n")
-                    self.check_inventory(player)
+                    print("\nA mana health potion has been added to your inventory.")
                 else :
-                    print("\nSorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '4':
                 while(self.leave_sell):
-                    # self.check_inventory()
+                    player.check_inventory(player)
                     print(f"\nShop has {self.gold_stock} gold.\n")
                     print(f"1. Sell a health potion for 10 gold.")
                     print(f"2. Sell a max health potion 25 gold.")
@@ -341,18 +335,18 @@ class Shop(Inventory):
                             player.potion -= 1
                             player.gold += 10
                             self.gold_stock -= 10
-                            print(f"\nYou got 10 gold.\nNow you have {player.gold} gold.\n")
+                            print(f"\nYou got 10 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("\nSorry, we can't buy this item for the moment.\n")
+                            print("\nSorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '2':
                         if player.max_potion > 0 and self.gold_stock >= 25:
                             Inventory.max_potion += 1 
                             player.max_potion -= 1
                             player.gold += 25
                             self.gold_stock -= 25
-                            print(f"\nYou got 25 gold.\nNow you have {player.gold} gold.\n")
+                            print(f"\nYou got 25 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("Sorry, we can't buy this item for the moment.\n")
+                            print("Sorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '3':
                         if player.mana_potion > 0 and self.gold_stock >= 15:
                             Inventory.mana_potion += 1 
@@ -361,7 +355,7 @@ class Shop(Inventory):
                             self.gold_stock -= 15
                             print(f"You got 15 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("Sorry, we can't buy this item for the moment.\n")
+                            print("Sorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '4':
                         # self.leave_sell = False
                         break
@@ -444,18 +438,17 @@ class Game:
                 print("=========================================================================================")
                 print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
                 print("=========================================================================================")
-                player = Player(3,1,3,100,self.player_name,125,5)
+                player = Player(3,1,3,100,self.player_name,125,3)
 
 
 
                 enemies = Enemies('First_boss', 75,0).gen()
                 Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
-
-
                 # combat = Combat()
                 # shop
 
             elif main_choice == '2':
+                print('This option is coming soon..')
                 continue
 
             elif main_choice == '3':
@@ -499,8 +492,12 @@ class Combat(Enemies):
     
     
     def target_choice(self, player,enemy):
-        attack_choice = input (f"Choose your attack {player.name} ? \n 1 : Big punch \n 2 : Attack lightning \n 3 : Fire ball \n ")
-        
+        if player.lvl < 3 :
+            attack_choice = input (f"Choose your attack {player.name} ? \n 1 : Big punch \n 2 : Attack lightning"+ bcolors.WARNING + "  (Unlock level 3)" +bcolors.RESET + " \n 3 : Fire ball        " + bcolors.WARNING + " (Unlock level 5) " + bcolors.RESET)
+        elif 3 <= player.lvl < 5 :
+            attack_choice = input (f"Choose your attack {player.name} ? \n 1 : Big punch \n 2 : Attack lightning \n 3 : Fire ball" + bcolors.WARNING + "    (Unlock level 5) " + bcolors.RESET)
+        else:
+            attack_choice = input (f"Choose your attack {player.name} ? \n 1 : Big punch \n 2 : Attack lightning \n 3 : Fire ball \n ")
         
         if attack_choice == "1":
             target = int(self.enemy_choice(player,enemy))
@@ -519,11 +516,11 @@ class Combat(Enemies):
     
     def battle(self,player,enemy):
         while self.leave :
-            print(bcolors.BLUE + f" Enemioes in game : " + bcolors.RESET)
+            print(bcolors.BLUE + f" Enemies in game : " + bcolors.RESET)
             for i in enemy.list_enemies:
                 print(bcolors.BLUE + f" Monster : {i['Name']} HP : {i['HP']} Lvl : {i['Level']}" + bcolors.RESET)
             question = self.battle_choice()
-            print(f'        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana} \n ')
+            print(f'\n        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana}  ')
             if question == "1" : # we start the attack against enemies
                 self.target_choice(player,enemy)
                 player.check_hp()
@@ -535,7 +532,7 @@ class Combat(Enemies):
                 if len(enemy.list_enemies) == count :
                     print('You beat this wave!')
                     break
-                if player.is_dead <= 0:
+                if player.is_dead == True :
                     print(f'You are dead {player.name}.. Try again')
                     break
                         
