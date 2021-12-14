@@ -170,7 +170,7 @@ class Player(Character,Inventory):
         if self.mana >= 10 :
             self.mana -= 10 
             diff_enemy = enemy.list_enemies[target - 1]["HP"] 
-            enemy.list_enemies[target - 1]['HP'] -= randint(5,10)
+            enemy.list_enemies[target - 1]['HP'] -= randint(100,200)
             print(bcolors.FAIL + "\n Good shot! Enemy loose : -", diff_enemy - enemy.list_enemies[target - 1]["HP"], " HP" + bcolors.RESET)
             diff = self.HP
             self.HP = enemy.enemy_attack(self)
@@ -426,6 +426,7 @@ class Score():
 class Game:
     player_name : str = field(init=False)
     score : object = field(init=False)
+    wave : int = field(init=False)
     exit : bool = True
     
 
@@ -441,19 +442,30 @@ class Game:
             if main_choice == '1':
 
 
-                print("=========================================================================================")
+                print("===================================================================================================")
                 print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
-                print("=========================================================================================")
-                player = Player(3,1,3,100,self.player_name,125,5)
+                print("===================================================================================================")
+                player = Player(3,1,3,100,self.player_name,110,0)
 
-
-
-                enemies = Enemies('First_boss', 75,0).gen()
-                Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
-
-
-                # combat = Combat()
-                # shop
+                wave_continue = True
+                self.wave = 1
+                while wave_continue :
+                    print("\n===========================================================================")
+                    print(f'=================================  WAVE {self.wave}  ================================')
+                    print("===========================================================================")
+                    enemies = Enemies('Boss', 75,0).gen()
+                    Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
+                    self.wave += 1
+                    wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to confirm\n")
+                    if wave_continue == 'y' : 
+                        continue
+                    else :
+                        save_game = input("Would you like to save ? 'y' to confirm\n")
+                        if save_game == 'y': #save()
+                            print("Your game has been saved.")
+                        break
+                self.score = Score(player.name, self.wave)
+                self.score.save_score()
 
             elif main_choice == '2':
                 continue
@@ -535,7 +547,7 @@ class Combat(Enemies):
                 if len(enemy.list_enemies) == count :
                     print('You beat this wave!')
                     break
-                if player.is_dead <= 0:
+                if player.is_dead == True :
                     print(f'You are dead {player.name}.. Try again')
                     break
                         
