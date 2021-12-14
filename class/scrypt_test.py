@@ -129,11 +129,11 @@ class Inventory(metaclass=ABCMeta):
 
     def add_gold(self, value):
         '''This function increase the number of potion by one'''
-        player.gold += value
+        self.gold += value
 
     def remove_gold(self, value):
         '''This function decrease the number of potion by one'''
-        player.gold -= value
+        self.gold -= value
 
     def check_inventory(self,player):
         '''This function prints the number of potions available in inventory'''
@@ -431,7 +431,7 @@ class Game:
     
 
     def get_player_name(self):
-        self.player_name = input("What's name your name friend ?\n")
+        self.player_name = input("What's your name friend ?\n")
         return self.player_name
 
     def main_menu(self):
@@ -453,9 +453,15 @@ class Game:
                     print("\n===========================================================================")
                     print(f'=================================  WAVE {self.wave}  ================================')
                     print("===========================================================================")
-                    enemies = Enemies('Boss', 75,0).gen()
+
+                    if self.wave % 3 == 0 :
+                        enemies = Enemies('BigBoss', 50*self.wave, self.wave).unique()
+                    else :
+                        enemies = Enemies('MiniBoss', 50, self.wave).gen()
+
                     Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
                     self.wave += 1
+
                     wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to confirm\n")
                     if wave_continue == 'y' : 
                         continue
