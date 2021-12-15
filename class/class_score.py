@@ -42,9 +42,3 @@ class Score():
                     if len(ligne) != 0 :
                         print(ligne[0], ' ', ligne[1])
             print("==================================")
-
-# test
-# score = Score('Player', 45)
-# score.display_score()
-# score.save_score()
-# score.display_score()
