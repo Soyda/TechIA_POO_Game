@@ -462,14 +462,14 @@ class Game:
                     Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
                     self.wave += 1
 
-                    wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to confirm\n")
-                    if wave_continue == 'y' : 
-                        continue
-                    else :
-                        save_game = input("Would you like to save ? 'y' to confirm\n")
-                        if save_game == 'y': #save()
-                            print("Your game has been saved.")
-                        break
+                    # wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to confirm\n")
+                    # if wave_continue == 'y' : 
+                    #     continue
+                    # else :
+                    #     save_game = input("Would you like to save ? 'y' to confirm\n")
+                    #     if save_game == 'y': 
+                    #         print("Your game has been saved.")
+                    #     break
                 self.score = Score(player.name, self.wave)
                 self.score.save_score()
 
