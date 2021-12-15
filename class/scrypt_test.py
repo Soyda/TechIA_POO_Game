@@ -154,6 +154,14 @@ class Inventory(metaclass=ABCMeta):
 # inventory.remove_gold(75)
 # inventory.check_inventory()
 
+@dataclass
+class bcolors:
+    OK = '\033[92m' #GREEN
+    WARNING = '\033[93m' #YELLOW
+    FAIL = '\033[91m' #RED
+    BLUE = '\033[34m' #BLUE
+    RESET = '\033[0m' #RESET COLOR
+
 
 
 @dataclass
@@ -243,7 +251,7 @@ class Player(Character,Inventory):
         if self.potion >= 1 :
             self.potion -=1 
             self.HP += 15 
-            print(f'\n1 potion used\nNow you have {self.HP} HP')
+            print(bcolors.WARNING + f'\n1 potion used\nNow you have {self.HP} HP' + bcolors.RESET)
         else:
             print("You didn't have enough potion")
         return self.HP 
@@ -254,7 +262,7 @@ class Player(Character,Inventory):
         if self.max_potion >= 1 :
             self.max_potion -= 1 
             self.HP += 50 
-            print(f'\n1 max potion used\nNow you have {self.HP} HP')
+            print(bcolors.WARNING + f'\n1 max potion used\nNow you have {self.HP} HP' + bcolors.RESET)
         else:
             print("You didn't have enough max potion")
         return self.HP
@@ -264,7 +272,7 @@ class Player(Character,Inventory):
         if self.mana_potion >= 1 :
             self.mana_potion -= 1
             self.mana += 200 
-            print(f'\n1 mana potion used\nNow you have {self.mana} Mana')
+            print(bcolors.WARNING + f'\n1 mana potion used\nNow you have {self.mana} Mana' + bcolors.RESET)
         else:
             print("You didn't have enough potion")
         return self.mana
@@ -424,24 +432,39 @@ class Game:
     score : object = field(init=False)
     wave : int = field(init=False)
     exit : bool = True
+    save : bool = False 
     
 
     def get_player_name(self):
         self.player_name = input("What's name your name friend ?\n")
         return self.player_name
 
+    def get_enemies(self,enemies):
+        if self.wave == 1:
+            enemies = Enemies('First Captain', 55, 1).gen()
+        elif self.wave == 2:
+            enemies = Enemies('First boss', 125, 1).unique()
+        elif self.wave == 3:
+            enemies = Enemies('Second Captain', 75,2).gen()
+        elif self.wave == 4:
+            enemies = Enemies('Second boss', 225, 2).unique()
+        elif self.wave > 4 :
+            enemies = Enemies('Infiny Captain', 30 * self.wave,3).gen()
+        return enemies
+
+    
+
     def main_menu(self):
         while(self.exit):
             
-            main_choice = input(f"\nMain menu \nMake your choice {self.player_name} (Use number 1 - 2 - 3) \n 1 - Start  \n 2 - Load game \n 3 - Score \n 4 - Exit \n ")
+            main_choice = input(f"\nMain menu \nMake your choice: (Use number 1 - 2 - 3) \n 1 - {'New game' if self.save == False else 'Continue game'}  \n 2 - Load game \n 3 - Score \n 4 - Exit \n ")
 
             if main_choice == '1':
-
-
+                self.get_player_name(Game) if self.save == False else self.player_name 
                 print("===================================================================================================")
                 print(f"The kingdom is under attack! Defend the kingdom of VS Code, all depends on your abilities {self.player_name}.")
                 print("===================================================================================================")
-                player = Player(3,1,3,100,self.player_name,110,0)
+                player = Player(3,1,3,250,self.player_name,155,8, mana=5550)
 
                 wave_continue = True
                 self.wave = 1
@@ -449,20 +472,23 @@ class Game:
                     print("\n===========================================================================")
                     print(f'=================================  WAVE {self.wave}  ================================')
                     print("===========================================================================")
-                    enemies = Enemies('Boss', 75,0).gen()
-                    Combat(enemies.name, enemies.HP,enemies.lvl).battle(player,enemies)
+                    enemies = object
+                    enemies = self.get_enemies(self,enemies)
+                    Combat(enemies.name, enemies.HP , enemies.lvl + self.wave ).battle(player,enemies)
                     self.wave += 1
-                    wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to confirm\n")
+                    wave_continue = input(f"Continue to WAVE {self.wave} ? 'y' to continue and 'n' to leave\n")
                     if wave_continue == 'y' : 
                         continue
-                    else :
+                    elif wave_continue == "n" :
                         save_game = input("Would you like to save ? 'y' to confirm\n")
                         if save_game == 'y': #save()
-                            f = open('./data/save.csv', 'wb')
-                            pickle.dump([player,enemies],f)
+                            f = open('./data/save.csv', 'ab')
+                            pickle.dump([player,enemies,self.wave,self.player_name],f)
                             f.close()
                             print("Your game has been saved.")
                         break
+                    else:
+                        print(bcolors.FAIL + '\nPlease press "y" or "n" ' + bcolors.RESET) 
                 self.score = Score(player.name, self.wave)
                 self.score.save_score()
 
@@ -470,13 +496,16 @@ class Game:
                 file = './data/save.csv'
                 save = open(file,"rb")
                 variable = pickle.load(save)
+                print(variable)
                 player = variable[0]
                 enemies = variable[1]
+                self.wave = variable[2]
+                self.player_name = variable[3]
                 save.close()
-                choice = input(f'Please choose your saved game : \n1 - Name : {player.name}')
+                choice = input(f'Saved game : \n1 - Name : {player.name}\nPress the number of your save here : ')
                 if choice == "1":
                     if os.path.isfile(file):
-                        
+                        self.save = True 
 
             elif main_choice == '3':
                 self.score = Score(self.player_name, 0)
@@ -488,14 +517,6 @@ class Game:
             else :
                 print(bcolors.FAIL + "\n Please use number 1, 2, 3 or 4" + bcolors.RESET)
 
-
-@dataclass
-class bcolors:
-    OK = '\033[92m' #GREEN
-    WARNING = '\033[93m' #YELLOW
-    FAIL = '\033[91m' #RED
-    BLUE = '\033[34m' #BLUE
-    RESET = '\033[0m' #RESET COLOR
 
 
 @dataclass
@@ -543,11 +564,11 @@ class Combat(Enemies):
     
     def battle(self,player,enemy):
         while self.leave :
-            print(bcolors.BLUE + f" Enemies in game : " + bcolors.RESET)
+            print(bcolors.BLUE + f" Enemies in game : \n------------------" + bcolors.RESET)
             for i in enemy.list_enemies:
-                print(bcolors.BLUE + f" Monster : {i['Name']} HP : {i['HP']} Lvl : {i['Level']}" + bcolors.RESET)
+                print(bcolors.BLUE + f" Monster : {i['Name']}   //  HP : {i['HP']}   //   Lvl : {i['Level']}" + bcolors.RESET)
+            print(bcolors.WARNING + f'\n        Player stats :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana} ' + bcolors.RESET)
             question = self.battle_choice()
-            print(f'\n        Health status :\n===============================\n         Name: {player.name}\n         HP: {player.HP}\n         Level: {player.lvl}\n         Mana: {player.mana}  ')
             if question == "1" : # we start the attack against enemies
                 self.target_choice(player,enemy)
                 player.check_hp()
@@ -558,12 +579,15 @@ class Combat(Enemies):
                         count += 1 
                 if len(enemy.list_enemies) == count :
                     print('You beat this wave!')
+                    player.lvl += 1 
+                    player.HP += 1
+                    player.mana += 165
                     break
                 if player.is_dead == True :
                     print(f'You are dead {player.name}.. Try again')
                     break
                         
-            elif question == "2" : # we start the attack against enemies
+            elif question == "2" : # we start the inventory menu
                 while True :
                     player.check_inventory(player)
                     menu = input(f' Iventory menu: \n 1. Use potion : {player.potion} \n 2. Use max potion : {player.max_potion} \n 3. Use mana potion : {player.mana_potion} \n 4. Exit \n')
@@ -576,7 +600,7 @@ class Combat(Enemies):
                     if menu == "4":
                         break
                 # self.battle_choice()
-            elif question == "3" : # we start the attack against enemies
+            elif question == "3" : # we create the Shop instance
                 Shop(10,10,10,10).black_market(player)
             elif question == "4":
                 break
@@ -589,6 +613,8 @@ class Combat(Enemies):
 
 
 
-game = Game
-game.get_player_name(game)
-game.main_menu(game)
+def main (game):
+    game.main_menu(game)
+    main(Game)
+
+main(Game)

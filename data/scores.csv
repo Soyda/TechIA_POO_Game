@@ -1,24 +1,14 @@
-Name,Score
-Test,55
-Test,55
-Joueur,25
-Joueur,25
-Joueur,25
-Player,45
-Player,45
-BIGTEST,3
-BIGTEST,2
-BIGTEST,2
-YoLo,2
+"Player(potion=3, max_potion=1, mana_potion=3, gold=250, name='zqfqefeq', HP=155, lvl=8, is_dead=False, list_enemies=[], mana=5550)","Enemies(name='First Captain', HP=55, lvl=1, is_dead=False, list_enemies=[{'Name': 'First Captain', 'HP': 55, 'Level': 1, 'is_dead': False}, {'Name': 'Devosore', 'HP': 31, 'Level': 1, 'is_dead': False}, {'Name': 'Simplosore', 'HP': 35, 'Level': 1, 'is_dead': False}])",2,zqfqefeq
+zqfqefeq,2
+"Player(potion=3, max_potion=1, mana_potion=3, gold=250, name='Ayoub', HP=151, lvl=8, is_dead=False, list_enemies=[], mana=5475)","Enemies(name='First Captain', HP=55, lvl=1, is_dead=False, list_enemies=[{'Name': 'First Captain', 'HP': 41, 'Level': 1, 'is_dead': False}, {'Name': 'Tiranosor', 'HP': 17, 'Level': 1, 'is_dead': False}, {'Name': 'Bigbob', 'HP': 20, 'Level': 1, 'is_dead': False}])",2,Ayoub
+Ayoub,2
+"Player(potion=3, max_potion=1, mana_potion=3, gold=250, name='YEAHAYAH', HP=155, lvl=8, is_dead=False, list_enemies=[], mana=5550)","Enemies(name='First Captain', HP=55, lvl=1, is_dead=False, list_enemies=[{'Name': 'First Captain', 'HP': 55, 'Level': 1, 'is_dead': False}, {'Name': 'Simplosore', 'HP': 38, 'Level': 1, 'is_dead': False}, {'Name': 'Bigbob', 'HP': 36, 'Level': 1, 'is_dead': False}])",2,YEAHAYAH
+YEAHAYAH,2
+"Player(potion=3, max_potion=1, mana_potion=3, gold=250, name='TESTESTES', HP=155, lvl=8, is_dead=False, list_enemies=[], mana=5550)","Enemies(name='First Captain', HP=55, lvl=1, is_dead=False, list_enemies=[{'Name': 'First Captain', 'HP': 55, 'Level': 1, 'is_dead': False}, {'Name': 'Simplosore', 'HP': 26, 'Level': 1, 'is_dead': False}, {'Name': 'Simplosore', 'HP': 27, 'Level': 1, 'is_dead': False}])",2,TESTESTES
+TESTESTES,2
 ayoub,2
-fqsf,2
-fqsf,2
-azdfaz,2
-azf,2
-fqf,2
-fqf,2
-fqf,2
-fqf,2
-fqf,2
-ayuoib,2
-dsgsdg,2
+ayoub,2
+AYOUBTEST,2
+TESTESTES,2
+TESTESTES,2
+fgygioh,2
