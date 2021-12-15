@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import ClassVar
 from abc import ABCMeta, abstractmethod
 
+
 @dataclass
 class Inventory(metaclass=ABCMeta):
     potion : int
@@ -41,79 +42,64 @@ class Inventory(metaclass=ABCMeta):
         '''This function decrease the number of potion by one'''
         self.gold -= value
 
-    def check_inventory(self):
+    def check_inventory(self,player):
         '''This function prints the number of potions available in inventory'''
-        return print(f"Inventory:\n Gold: {self.gold}\n Health potion(s): {self.potion}\n Max health potion(s): {self.max_potion}\n Mana potion(s): {self.mana_potion}\n")
+        return print(f"\n-----------------------\n Inventory:\n Gold: {player.gold}\n Health potion(s): {player.potion}\n Max health potion(s): {player.max_potion}\n Mana potion(s): {player.mana_potion}\n Gold : {player.gold}\n-----------------------\n")
 
-# inventory = Inventory(10, 2, 3, 100)
-# print(inventory.potion)
-# print(inventory.max_potion)
-# print(inventory.mana_potion)
-# print(inventory.gold)
-# inventory.check_inventory()
-# inventory.add_max_potion()
-# inventory.add_potion()
-# inventory.add_mana_potion()
-# inventory.add_gold(150)
-# inventory.check_inventory()
-# inventory.remove_max_potion()
-# inventory.remove_potion()
-# inventory.remove_mana_potion()
-# inventory.remove_gold(75)
-# inventory.check_inventory()
 
 @dataclass
 class Shop(Inventory):
-    inventory : Inventory
-    potion_stock : int = 5
-    max_potion_stock : int = 2
-    mana_potion_stock : int = 3
+    inventory : Inventory = field(init=False)
+    Inventory.potion = 5
+    Inventory.max_potion = 6
+    Inventory.mana_potion = 9
     gold_stock : int = 200
     shop_choice : str = field(init=False)
     sell_choice : str = field(init=False)
     leave : bool = True
     leave_sell : bool = True
 
-    def display_shop(self):
+    def black_market(self,player):
         while(self.leave):
-            print('\nWelcome to the shop, feel free to spend all your gold here !')
-            print(f"1. Buy a health potion for 20 gold. {self.potion_stock} in stock")
-            print(f"2. Buy a max health potion 50 gold. {self.max_potion_stock} in stock")
-            print(f"3. Buy a mana potion 30 gold. {self.mana_potion_stock} in stock")
+            self.check_inventory(player)
+            print('Welcome my friend, I have some stuff there for you!\n')
+            print(f"1. Buy health potion for 20 gold.     ==> {Inventory.potion} item in stock" )
+            print(f"2. Buy max health potion for 50 gold. ==> {Inventory.max_potion} item in stock")
+            print(f"3. Buy Mana potion for 30 gold.       ==> {Inventory.mana_potion} item in stock")
             print(f"4. Sell an item.")
             print("5. Leave shop.\n")
             self.shop_choice = input("What is your choice ?\n")
 
             if self.shop_choice == '1':
-                if self.potion_stock > 0 and self.gold >= 20:
-                    self.potion_stock -= 1
-                    self.potion += 1
-                    self.gold -= 20
+                if  Inventory.potion > 0 and player.gold >= 20:
+                    Inventory.potion -=1 
+                    player.potion += 1
+                    player.gold -= 20
                     self.gold_stock += 20
-                    print("A health potion has been added to your inventory.\n")
+                    print("\nA health potion has been added to your inventory.")
                 else :
-                    print("Sorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '2':
-                if self.max_potion_stock > 0 and self.gold >= 50:
-                    self.max_potion_stock -= 1
-                    self.max_potion += 1
-                    self.gold -= 50
+                if Inventory.max_potion > 0 and player.gold >= 50:
+                    Inventory.max_potion -= 1
+                    player.max_potion += 1
+                    player.gold -= 50
                     self.gold_stock += 50
-                    print("A max health potion has been added to your inventory.\n")
+                    print("\nA max health potion has been added to your inventory.")
                 else :
-                    print("Sorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '3':
-                if self.mana_potion_stock > 0 and self.gold >= 30:
-                    self.mana_potion_stock -= 1
-                    self.mana_potion += 1
-                    self.gold -= 30
+                if Inventory.mana_potion >0 and player.gold >= 30:
+                    Inventory.mana_potion -= 1
+                    player.mana_potion += 1
+                    player.gold -= 30
                     self.gold_stock += 30
-                    print("A mana health potion has been added to your inventory.\n")
+                    print("\nA mana health potion has been added to your inventory.")
                 else :
-                    print("Sorry, you can't buy this item for the moment.\n")
+                    print("\nSorry, you can't buy this item for the moment.")
             elif self.shop_choice == '4':
                 while(self.leave_sell):
-                    # self.check_inventory()
+                    player.check_inventory(player)
                     print(f"\nShop has {self.gold_stock} gold.\n")
                     print(f"1. Sell a health potion for 10 gold.")
                     print(f"2. Sell a max health potion 25 gold.")
@@ -122,32 +108,32 @@ class Shop(Inventory):
                     self.sell_choice = input("What is your choice ?\n")
 
                     if self.sell_choice == '1':
-                        if self.potion > 0 and self.gold_stock >= 10:
-                            self.potion_stock += 1
-                            self.potion -= 1
-                            self.gold += 10
+                        if player.potion > 0 and self.gold_stock >= 10:
+                            Inventory.potion += 1
+                            player.potion -= 1
+                            player.gold += 10
                             self.gold_stock -= 10
-                            print("You got 10 gold.\n")
+                            print(f"\nYou got 10 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("Sorry, we can't buy this item for the moment.\n")
+                            print("\nSorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '2':
-                        if self.potion > 0 and self.gold_stock >= 25:
-                            self.potion_stock += 1
-                            self.potion -= 1
-                            self.gold += 25
+                        if player.max_potion > 0 and self.gold_stock >= 25:
+                            Inventory.max_potion += 1 
+                            player.max_potion -= 1
+                            player.gold += 25
                             self.gold_stock -= 25
-                            print("You got 25 gold.\n")
+                            print(f"\nYou got 25 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("Sorry, we can't buy this item for the moment.\n")
+                            print("Sorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '3':
-                        if self.potion > 0 and self.gold_stock >= 15:
-                            self.potion_stock += 1
-                            self.potion -= 1
-                            self.gold += 15
+                        if player.mana_potion > 0 and self.gold_stock >= 15:
+                            Inventory.mana_potion += 1 
+                            player.mana_potion -= 1
+                            player.gold += 15
                             self.gold_stock -= 15
-                            print("You got 15 gold.\n")
+                            print(f"You got 15 gold.\nNow you have {player.gold} gold.")
                         else :
-                            print("Sorry, we can't buy this item for the moment.\n")
+                            print("Sorry, we can't buy this item for the moment.")
                     elif self.sell_choice == '4':
                         # self.leave_sell = False
                         break
@@ -159,8 +145,3 @@ class Shop(Inventory):
                 break
             else : 
                 print("Please use number 1, 2, 3, 4 or 5.")
-
-# inventory = Inventory(5, 2, 3, 200)
-# shop = Shop(inventory)
-# shop.display_shop(shop)
-
