@@ -1,3 +1,11 @@
+
+from class_game import Game
+
+def main (game):
+    game.main_menu(game)
+    main(Game)
+
+=======
 from abc import abstractmethod, ABCMeta
 import os 
 from os import environ
