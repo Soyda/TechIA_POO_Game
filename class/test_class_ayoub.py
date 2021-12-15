@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from scrypt_test import *
+from scrypt_test import Character,Player,Enemies, Inventory, bcolors, Shop, Score, Game, Combat
 
 
 @pytest.fixture
@@ -14,8 +14,18 @@ def enemies_test():
 
 @pytest.fixture
 def player_test():
-    return Player('TestPlayer',50,5)
+    return Player(3,1,3,250,"test_player",155,8)
+    
+@pytest.fixture
+def combat_test():
+    return Combat('combat',50,0,round=1)
 
+@pytest.fixture
+def target():
+    return 1
+@pytest.fixture 
+def shop_test():
+    return Shop(10,10,10,150)
 
 
 class TestCharactere:
@@ -44,9 +54,11 @@ class TestEnemies:
 
     def test_check_hp(self):
         enemies_test_dead = Enemies('First monster',0,0)
-        assert enemies_test_dead.unique().check_hp() == '1 player is dead'
-        player_dead = Player('NamePlayer',0,10)
-        assert player_dead.check_hp() == f'You are dead.. Try again {player_dead.name}'
+        enemies_test_dead.unique().check_hp() 
+        assert enemies_test_dead.is_dead == True 
+        player_dead = Player(10,10,10,10,'NamePlayer',0,10)
+        player_dead.check_hp()
+        assert player_dead.is_dead == True
 
     def test_enemy_attack(self, enemies_test, player_test ):
         assert player_test.HP > enemies_test.enemy_attack(player_test) 
@@ -67,27 +79,29 @@ class TestEnemies:
 
 class TestPlayer:
     def test_init(self, player_test):
-        assert player_test.HP == 50 
-        assert player_test.name == "TestPlayer"
+        assert player_test.HP == 155
+        assert player_test.name == "test_player"
         assert player_test.is_dead == False
-        with pytest.raises(ValueError):
-            Player(99,99,0)
-        with pytest.raises(ValueError):
-            Player("PlayerTest")
-        with pytest.raises(ValueError):
-            Player("PlayerTest","99",0)
         with pytest.raises(TypeError):
+            Player(99,99,0)
+        with pytest.raises(TypeError):
+            Player("PlayerTest")
+        with pytest.raises(TypeError):
+            Player("PlayerTest","99",0)
+        with pytest.raises(ValueError):
             Player("PlayerTest",99,0,15).use_potion(player_test)
         
 
-    def test_attack_big_punch(self,enemies_test,player_test):
-        assert enemies_test.unique().list_enemies[0]['HP'] > player_test.attack_big_punch(enemies_test.unique().list_enemies[0]['HP']) 
+    def test_attack_big_punch(self,enemies_test,target, combat_test, player_test):
+        
+        assert enemies_test.unique().list_enemies[0]['HP'] > player_test.attack_big_punch(enemies_test.unique(),target,combat_test) 
+        assert combat_test.round == 2
         with pytest.raises(TypeError):
             player_test.attack_big_punch("51")        
-    def test_attack_lightning(self,enemies_test,player_test):  
-        assert player_test.attack_lightning(enemies_test.unique().list_enemies[0]['HP']) < enemies_test.unique().list_enemies[0]['HP']
-    def test_fire_ball(self,enemies_test,player_test):
-        assert player_test.fire_ball(enemies_test.unique().list_enemies[0]['HP']) < enemies_test.unique().list_enemies[0]['HP']
+    def test_attack_lightning(self,enemies_test,target,combat_test,player_test):  
+        assert enemies_test.unique().list_enemies[0]['HP'] > player_test.attack_lightning(enemies_test, target, combat_test) 
+    def test_fire_ball(self,enemies_test,combat_test,player_test):
+        assert enemies_test.unique().list_enemies[0]['HP'] > player_test.fire_ball(enemies_test, combat_test) 
     def test_use_potion(self,player_test):
         assert player_test.HP < player_test.use_potion()
     def test_use_maxi_potion(self, player_test):
@@ -96,3 +110,20 @@ class TestPlayer:
             player_test.use_maxi_potion("51") 
     def test_use_mana_potion(self, player_test):
         assert player_test.mana  < player_test.use_mana_potion() 
+
+
+class Shop:
+    def test_def_black_market(self,player_test):
+        self.shop_choice = "1"
+        assert player_test.potion == 4
+        self.shop_choice = "2"
+        assert player_test.potion_max == 0
+        assert player_test.gold == 200
+        self.sell_choice = "1"
+        assert player_test.gold == 260
+        assert player_test.max_potion == 0
+
+class Game:
+    def test_get_enemies(self):
+        self.wave = 1 
+        assert self.get_enemies(self).list_enemies[0]['Name'] == "First Captain"

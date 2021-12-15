@@ -183,7 +183,6 @@ class Player(Character,Inventory):
             print(bcolors.FAIL + f"\n Oh, now you are under attack!! \n{self.name} : -", diff - self.HP, "HP lost!" ,"\n" + bcolors.RESET) 
             combat.round += 1 
             print(f'=================================  ROUND {combat.round}   ================================\n')
-            
             return enemy.list_enemies[target - 1]['HP']
         else:
             print('You didnt have enough mana')
@@ -580,7 +579,7 @@ class Combat(Enemies):
                 if len(enemy.list_enemies) == count :
                     print('You beat this wave!')
                     player.lvl += 1 
-                    player.HP += 1
+                    player.HP += 25
                     player.mana += 165
                     break
                 if player.is_dead == True :
@@ -617,4 +616,4 @@ def main (game):
     game.main_menu(game)
     main(Game)
 
-main(Game)
+# main(Game)
