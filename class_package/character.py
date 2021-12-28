@@ -2,9 +2,9 @@ from abc import abstractmethod, ABCMeta
 from typing import ClassVar 
 from dataclasses import dataclass , field
 from random import randint , choice  
-from entity import Character
-from inventory import Inventory
-from colors import bcolors
+from class_package.entity import Character
+from class_package.inventory import Inventory
+from class_package.colors import bcolors
 
 @dataclass
 class Player(Character,Inventory):
