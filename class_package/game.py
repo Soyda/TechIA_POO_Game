@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
 import os
-from class_inventory import Inventory
-from class_character import Player
-from class_score import Score 
-from class_entity import Enemies
-from class_combat import Combat
-from pickle import * 
-from class_colors import bcolors
+from inventory import Inventory
+from character import Player
+from score import Score 
+from entity import Enemies
+from combat import Combat
+import pickle 
+from colors import bcolors
 
 
 @dataclass

@@ -1,8 +1,8 @@
 from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass 
-from class_entity import Enemies
-from class_colors import bcolors
-from class_inventory import Shop
+from entity import Enemies
+from colors import bcolors
+from inventory import Shop
 
 @dataclass
 class Combat(Enemies):

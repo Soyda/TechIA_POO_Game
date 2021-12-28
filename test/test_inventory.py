@@ -1,10 +1,10 @@
 import pytest
 import os
-from class_inventory import Inventory
+from class_package import inventory
 
 @pytest.fixture
 def inventory_test():
-   return Inventory(10, 2, 3, 100)
+   return inventory.Inventory(10, 2, 3, 100)
 
 class TestInventory():
     def test_init(self, inventory_test):

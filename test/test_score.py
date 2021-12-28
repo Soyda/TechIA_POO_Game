@@ -1,11 +1,11 @@
 import pytest
 import os
-from class_score import Score
+from class_package import score
 
 
 @pytest.fixture
 def score_test():
-   return Score('Joueur', 50)
+   return score.Score('Joueur', 50)
 
 class TestScore():
     def test_init(self, score_test):

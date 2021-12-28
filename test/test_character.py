@@ -1,20 +1,21 @@
 import pytest
 import os
 
-from scrypt_test import *
+from class_package import character
+from class_package import entity
 
 
 @pytest.fixture
 def TestCharacter():
-    return Character('Mytest',50,0)
+    return character.Character('Mytest',50,0)
 
 @pytest.fixture
 def enemies_test():
-    return Enemies('First monster',25,0)
+    return entity.Enemies('First monster',25,0)
 
 @pytest.fixture
 def player_test():
-    return Player('TestPlayer',50,5)
+    return character.Player('TestPlayer',50,5)
 
 
 
@@ -25,11 +26,11 @@ class TestCharactere:
         assert TestCharacter.is_dead == False
         assert TestCharacter.lvl == 0
         with pytest.raises(ValueError):
-            Enemies(10,55,'a')
+            entity.Enemies(10,55,'a')
         with pytest.raises(ValueError):
-            Enemies("PlayerTest")
+            entity.Enemies("PlayerTest")
         with pytest.raises(ValueError):
-            Enemies("Player",0)
+            entity.Enemies("Player",0)
 
 
 class TestEnemies:
@@ -38,14 +39,14 @@ class TestEnemies:
         assert enemies_test.name == "First monster"
         assert enemies_test.is_dead == False
         with pytest.raises(ValueError):
-            Enemies(10,55)
+            entity.Enemies(10,55)
         with pytest.raises(ValueError):
-            Enemies("PlayerTest",'15')
+            entity.Enemies("PlayerTest",'15')
 
     def test_check_hp(self):
-        enemies_test_dead = Enemies('First monster',0,0)
+        enemies_test_dead = entity.Enemies('First monster',0,0)
         assert enemies_test_dead.unique().check_hp() == '1 player is dead'
-        player_dead = Player('NamePlayer',0,10)
+        player_dead = character.Player('NamePlayer',0,10)
         assert player_dead.check_hp() == f'You are dead.. Try again {player_dead.name}'
 
     def test_enemy_attack(self, enemies_test, player_test ):
@@ -55,11 +56,11 @@ class TestEnemies:
 
     def test_gen(self,enemies_test):
         enemies_group = enemies_test.gen().list_enemies
-        assert len(enemies_group) > len(Enemies('MonsterTest',25,0).list_enemies)
+        assert len(enemies_group) > len(entity.Enemies('MonsterTest',25,0).list_enemies)
 
     def test_unique(self,enemies_test):
         enemies_group = enemies_test.unique().list_enemies
-        assert len(enemies_group) > len(Enemies('MonsterTest',25,0).list_enemies)
+        assert len(enemies_group) > len(entity.Enemies('MonsterTest',25,0).list_enemies)
         assert enemies_group[0]['HP'] == 25 
 
 
@@ -71,13 +72,13 @@ class TestPlayer:
         assert player_test.name == "TestPlayer"
         assert player_test.is_dead == False
         with pytest.raises(ValueError):
-            Player(99,99,0)
+            character.Player(99,99,0)
         with pytest.raises(ValueError):
-            Player("PlayerTest")
+            character.Player("PlayerTest")
         with pytest.raises(ValueError):
-            Player("PlayerTest","99",0)
+            character.Player("PlayerTest","99",0)
         with pytest.raises(TypeError):
-            Player("PlayerTest",99,0,15).use_potion(player_test)
+            character.Player("PlayerTest",99,0,15).use_potion(player_test)
         
 
     def test_attack_big_punch(self,enemies_test,player_test):
