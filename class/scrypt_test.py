@@ -1,3 +1,4 @@
+
 from abc import abstractmethod, ABCMeta
 import os 
 import pickle
@@ -612,6 +613,6 @@ class Combat(Enemies):
 
 def main (game):
     game.main_menu(game)
-    main(Game)
+main(Game)
 
 # main(Game)

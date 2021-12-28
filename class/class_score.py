@@ -13,22 +13,22 @@ class Score():
     #     self.name = player_name 
     #     self.score = round
 
-    def save_score(self, path='./data/scores.csv' ):
-        if os.path.exists(path) == False : # check whether scores.csv exists, if not create it 
+    def save_score(self):
+        if os.path.exists('./data/scores.csv') == False : # check whether scores.csv exists, if not create it 
             header = ["Name", "Score"]
-            with open(path, 'w') as score_csv: # create scores.csv
+            with open('./data/scores.csv', 'w') as score_csv: # create scores.csv
                 writer = csv.writer(score_csv, delimiter=',')
                 writer.writerow(header) # write the header
 
 
         # Update scores.csv
-        with open(path, 'a', newline='') as score_csv: # add a new line in csv file
+        with open('./data/scores.csv', 'a', newline='') as score_csv: # add a new line in csv file
             writer = csv.writer(score_csv, delimiter=',')
             score_line = [self.name, self.score]
             writer.writerow(score_line) # add a line with current name and score
     
-    def display_score(self, path='./data/scores.csv'):
-        if os.path.exists(path) == False :
+    def display_score(self):
+        if os.path.exists('./data/scores.csv') == False :
             print("==================================")
             print('Sorry no scores available for now.')
             print("==================================")
@@ -36,7 +36,7 @@ class Score():
         else :
             print("==================================")
             # Display scores
-            with open(path) as score_csv:
+            with open('./data/scores.csv') as score_csv:
                 reader = csv.reader(score_csv, delimiter=',') #reader mode
                 for ligne in reader: # read each line
                     if len(ligne) != 0 :
